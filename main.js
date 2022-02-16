@@ -28,7 +28,7 @@ function randomChangeHP(player){
         if(player.hp <= 0){
             player.hp=0;
             $randomButton.disabled = true;
-            $arenas.appendChild(playerLose(player.name));
+            $arenas.appendChild(playerWin(player.name));
             $playerLife.style.width=0+'%';
         }
     console.log(player.hp);
@@ -37,15 +37,15 @@ function randomChangeHP(player){
 
 
 
-function playerLose(name){
-    const $loseTitle = createElement('div', 'loseTitle');
+function playerWin(name){
+    const $WinTitle = createElement('div', 'loseTitle');
     if(name == 'Sonya'){
-        $loseTitle.innerText ='SCORPION wins';
+        $WinTitle.innerText ='SCORPION wins';
     }
     else if(name == 'SCORPION'){
-        $loseTitle.innerText ='Sonya wins';
+        $WinTitle.innerText ='Sonya wins';
     }
-    return $loseTitle;
+    return $WinTitle;
 }
 
 $randomButton.addEventListener('click', function(){
