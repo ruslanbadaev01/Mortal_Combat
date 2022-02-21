@@ -1,12 +1,12 @@
 const $arenas = document.querySelector('.arenas')
-//const $randomButton = document.querySelector('.button')
+const $randomButton = document.querySelector('.button')
 
 
 const $formFight = document.querySelector('.control');
 const HIT = {
-    head: 30,
-    body: 25,
-    foot: 20,
+    head: 3000,
+    body: 2500,
+    foot: 2000,
 }
 const ATTACK = ['head', 'body', 'foot'];
 
@@ -69,7 +69,7 @@ function createPlayer (player){
 }
 
 function getRandom (num){
-    return Math.ceil(Math.random() * 20)
+    return Math.ceil(Math.random() * num)
 }
 
 function changeHp (damage){
@@ -125,7 +125,7 @@ function enemyAttack(){
 
 $formFight.addEventListener('submit', function(e){
     e.preventDefault();
-    console.dir($formFight);
+    //console.dir($formFight);
     const enemy = enemyAttack();
 
     const attack = {};
@@ -141,8 +141,43 @@ $formFight.addEventListener('submit', function(e){
  
         item.checked = false;
     }
-console.log('###: a', attack);
-console.log('###: e', enemy);
+    if (enemy.hit !== attack.defence){
+        player1.changeHp(enemy.value);
+        player1.renderHp( );
+    }else{
+        console.log('player blocked');
+    }
+    if (attack.hit !== enemy.defence){
+        player2.changeHp(attack.value);
+        player2.renderHp( );
+    }else{ 
+       console.log('sucessful')
+    }
+    console.log(attack);
+    console.log(enemy);
+   
+
+
+
+    if (player1.hp === 0 || player2.hp === 0){
+        const $reloadButton = createReloadButton()
+        
+        $reloadButton.addEventListener('click', function (){
+            window.location.reload()
+        })
+
+        $arenas.append($reloadButton)
+        for (let item of $formFight) {
+            item.disabled = true;
+       }
+    }
+    if (player1.hp === 0 && player1.hp < player2.hp){
+        $arenas.append(playerWins(player2.name))
+    } else if (player2.hp === 0 && player2.hp < player1.hp){
+        $arenas.append(playerWins(player1.name))
+    } else if (player1.hp === 0 && player2.hp === 0){
+        $arenas.append(playerWins())
+    }
 
 })
 
