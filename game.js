@@ -12,9 +12,9 @@ class Game {
 
     
     HIT = {
-        head: 3000,
-        body: 2500,
-        foot: 2500,
+        head: 300,
+        body: 250,
+        foot: 250,
     }
     ATTACK = ['head', 'body', 'foot'];
 
@@ -42,22 +42,34 @@ class Game {
         this.$randomButton = document.querySelector('.button');
         this.$chat = document.querySelector('.chat');
         this.$formFight = document.querySelector('.control');
-        this.$arenas.append(player1.createPlayer());
-        this.$arenas.append(player2.createPlayer());
 
         this.logMessage('start', player1, player2);
         this.$formFight.addEventListener('submit', this.onSubmit);
     }
 
 
+    attacks = async (hit,defence) =>{
+        return (await
+        fetch('http://reactmarathon-api.herokuapp.com/api/mk/player/fight', {
+            method: 'POST',
+            body: JSON.stringify({
+                hit,
+                defence,
+            })
+        })).json();
+    }
 
+    getAttakcs = async (playerAttack,resolve,reject) =>{
+       const result = await this.attacks(playerAttack.hit, playerAttack.defence)
+        resolve(result);
+    }
 
     enemyAttack = () => {
         const hit = this.ATTACK[getRandom(3)-1];
         const defence = this.ATTACK[getRandom(3)-1];
 
         return{
-            value: getRandom(this.HIT[hit]),
+
             hit,
             defence,
         }
@@ -69,7 +81,7 @@ class Game {
             const $reloadButton = this.createReloadButton()
             
             $reloadButton.addEventListener('click', function (){
-                window.location.reload()
+                window.location.pathname = 'index.html'
             })
 
             this.$arenas.append($reloadButton)
@@ -144,12 +156,12 @@ class Game {
  
     onSubmit = (e) => {
         e.preventDefault();
-        const enemy = this.enemyAttack();
-        const attack = {};
+        let enemy= {} ;
+        let attack = {};
 
         for(let item of this.$formFight){
             if(item.checked && item.name === 'hit'){
-                attack.value = getRandom (this.HIT[item.value]);
+               
                 attack.hit = item.value;
             }
             if( item.checked && item.name === 'defence'){
@@ -158,6 +170,13 @@ class Game {
     
             item.checked = false;
         }
+
+
+        this.getAttakcs(attack, (value) => {
+            enemy = value.player2;
+            attack = value.player1;
+        }).then( () => {
+
         if (enemy.hit !== attack.defence){
             player1.changeHp(enemy.value);
             player1.renderHp( );
@@ -177,6 +196,7 @@ class Game {
         }
     
         this.showResult();
+        })
 
     }
 

@@ -53,6 +53,32 @@ class Player{
     }
 }
 
-export const player1 = new Player( 1,'Scorpion', 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif');
-export const player2 = new Player( 2,'Sub-Zero', 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif');
+const initPLayer = async (resolve,reject) => {
+
+    const playerObject = await getRandomPlayerAsync();
+    resolve(playerObject);
+
+}
+
+const getRandomPlayerAsync = async () =>{
+
+    return  (await fetch('https://reactmarathon-api.herokuapp.com/api/mk/player/choose')).json();
+
+}
+
+
+initPLayer(function(value){
+    player2 = new Player( 2,value.name,value.img);
+}).then(function() {
+    const $arenas = document.querySelector('.arenas')
+    $arenas.append(player1.createPlayer());
+    $arenas.append(player2.createPlayer());
+});
+export let player2 = {
+    
+}
+const playerData = JSON.parse(localStorage.getItem('player1'));
+console.log(playerData);
+export const player1 = new Player( 1,playerData.name,playerData.img);
+
 
