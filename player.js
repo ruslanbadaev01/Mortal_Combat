@@ -7,8 +7,6 @@ class Player{
         this.img = img;
     }
 
-
-
     player;
     name;
     hp = 100;
